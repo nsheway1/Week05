@@ -50,8 +50,8 @@ WHERE country.continent = 'Asia';
 SELECT COUNT(*)
 FROM city
 JOIN country ON city.countrycode = country.code
-JOIN  countrylanguage ON country.code = countrylanguage.countrycode
-WHERE countrylanguage.language = 'English' AND countrylanguage.isofficial;
+JOIN countrylanguage ON country.code = countrylanguage.countrycode
+WHERE countrylanguage.language = 'English' AND countrylanguage.isofficial = true;
 
 -- 8. The average population of cities in countries where the official language is English
 -- (average population of cities where English is official language: 285,809)
@@ -73,8 +73,8 @@ ORDER BY largest_city_population;
 -- 10. The names of all of the cities in South America that have a population of more than 1 million people and the official language of each city’s country
 -- (29 rows)
 SELECT city.name
-FROM country
-JOIN countrylanguage ON country.code = countrylanguage.countrycode
-JOIN city ON countrylanguage.countrycode = city.countrycode
+FROM city
+RIGHT JOIN country ON city.countrycode = country.code
+JOIN countrylanguage ON countrylanguage.countrycode = country.code
 WHERE continent = 'South America' AND city.population > 1000000
 GROUP BY city.name;
