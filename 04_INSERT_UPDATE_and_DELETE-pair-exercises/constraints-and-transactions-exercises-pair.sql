@@ -44,11 +44,20 @@ WHERE code = 'USA';
 
 -- 7. Delete Smallville, Kansas from the city table. (Did it succeed? Why?)
 DELETE FROM city WHERE name = 'Smallville';
+-- Works now because the captial is 3813 again instead of Smallville's code (FK relationship).
 
 -- 8. Reverse the "is the official language" setting for all languages where the
 -- country's year of independence is within the range of 1800 and 1972 
 -- (exclusive). 
 -- (590 rows affected)
+START TRANSACTION;
+        UPDATE isofficial
+        SET isofficial = (CASE WHEN isofficial = 'true' THEN 'false'
+        WHEN isofficial = 'false' THEN 'true' END)
+        FROM countrylanguage
+        JOIN country on country.code = countrylanguage.countrycode
+        WHERE indepyear > 1800 and indepyear < 1972;
+ROLLBACK;
 
 -- 9. Convert population so it is expressed in 1,000s for all cities. (Round to
 -- the nearest integer value greater than 0.)
@@ -64,4 +73,8 @@ COMMIT;
 -- (7 rows affected)
 START TRANSACTION;
         UPDATE country
-        SET surfacearea = (surfacearea * 
+        SET surfacearea = (surfacearea * 1609)
+        FROM country
+        JOIN countrylanguage ON country.code = countrylanguage.countrycode
+        WHERE language = 'French' AND percentage > 20;
+ROLLBACK;
